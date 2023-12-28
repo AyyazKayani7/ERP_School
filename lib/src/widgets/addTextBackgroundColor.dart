@@ -3,9 +3,11 @@
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
-class AddText extends StatelessWidget {
+class AddTextBackColor extends StatelessWidget {
   String data;
   Color color;
+
+  Color backgroundColor;
   FontWeight textWeight;
   String fontFamily;
   double textSize;
@@ -14,11 +16,12 @@ class AddText extends StatelessWidget {
   bool infinity;
   double marginLeft, marginRight, marginTop, marginBottom;
 
-  AddText(
+  AddTextBackColor(
       {super.key,
       required this.data,
-      this.fontFamily = "SourceSansPro",
+      this.fontFamily = "Roboto",
       this.color = Colors.black,
+      this.backgroundColor = Colors.white,
       this.textWeight = FontWeight.normal,
       this.textSize = 16,
       this.textAlign = TextAlign.center,
@@ -38,21 +41,22 @@ class AddText extends StatelessWidget {
           right: marginRight,
           top: marginTop,
           bottom: marginBottom),
-      decoration: const BoxDecoration(
-          //border: Border.all(),
-          // border: Border(
-          //     top: BorderSide(),
-          //     bottom: BorderSide(),
-          //     left: BorderSide(),
-          //     right: BorderSide())
-          ),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        //border: Border.all(),
+        // border: Border(
+        //     top: BorderSide(),
+        //     bottom: BorderSide(),
+        //     left: BorderSide(),
+        //     right: BorderSide())
+      ),
       child: Text(
         data,
         maxLines: 2,
         style: TextStyle(
           overflow: TextOverflow.ellipsis,
           //fontFamily: 'poppins',
-          fontFamily: fontFamily,
+          //fontFamily: fontFamily,
           fontWeight: textWeight,
           color: color,
           fontSize: textSize,

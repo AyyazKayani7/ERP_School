@@ -1,6 +1,12 @@
+import 'package:erp_school/src/askDoubts.dart';
+import 'package:erp_school/src/assignmentScreen.dart';
 import 'package:erp_school/src/attendance.dart';
+import 'package:erp_school/src/changePassword.dart';
+import 'package:erp_school/src/dateSheet.dart';
 import 'package:erp_school/src/feesDue.dart';
 import 'package:erp_school/src/profile.dart';
+import 'package:erp_school/src/resultScreen.dart';
+import 'package:erp_school/src/timeTableScreen.dart';
 import 'package:erp_school/src/utilities/mySize.dart';
 import 'package:flutter/material.dart';
 
@@ -9,7 +15,8 @@ import 'utilities/colors.dart';
 import 'widgets/addText.dart';
 
 class StackCheck extends StatefulWidget {
-  const StackCheck({super.key});
+  String studentName;
+  StackCheck({super.key, required this.studentName});
 
   @override
   State<StackCheck> createState() => _StackCheckState();
@@ -65,7 +72,7 @@ class _StackCheckState extends State<StackCheck> {
                             children: [
                               AddText(
                                 height: 40,
-                                data: 'Hi Akshay',
+                                data: 'Hi ${widget.studentName.split(' ')[0]}',
                                 color: Colors.white,
                                 textSize: 30,
                               ),
@@ -244,7 +251,13 @@ class _StackCheckState extends State<StackCheck> {
                                 ),
                               ),
                               GestureDetector(
-                                onTap: () {},
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: ((context) =>
+                                              const AssignmentScreen())));
+                                },
                                 child: Container(
                                   decoration: const BoxDecoration(
                                       color: AppColors.greyShade1,
@@ -316,7 +329,13 @@ class _StackCheckState extends State<StackCheck> {
                                 ),
                               ),
                               GestureDetector(
-                                onTap: () {},
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const TimeTableScreen()));
+                                },
                                 child: Container(
                                   decoration: const BoxDecoration(
                                       color: AppColors.greyShade1,
@@ -356,7 +375,14 @@ class _StackCheckState extends State<StackCheck> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               GestureDetector(
-                                onTap: () {},
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => ResultScreen(
+                                                studentName: widget.studentName,
+                                              )));
+                                },
                                 child: Container(
                                   decoration: const BoxDecoration(
                                       color: AppColors.greyShade1,
@@ -388,7 +414,13 @@ class _StackCheckState extends State<StackCheck> {
                                 ),
                               ),
                               GestureDetector(
-                                onTap: () {},
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const DateSheet()));
+                                },
                                 child: Container(
                                   decoration: const BoxDecoration(
                                       color: AppColors.greyShade1,
@@ -428,7 +460,13 @@ class _StackCheckState extends State<StackCheck> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               GestureDetector(
-                                onTap: () {},
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const AskDoubts()));
+                                },
                                 child: Container(
                                   decoration: const BoxDecoration(
                                       color: AppColors.greyShade1,
@@ -532,7 +570,13 @@ class _StackCheckState extends State<StackCheck> {
                                 ),
                               ),
                               GestureDetector(
-                                onTap: () {},
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ChangePassword()),
+                                  );
+                                },
                                 child: Container(
                                   decoration: const BoxDecoration(
                                       color: AppColors.greyShade1,

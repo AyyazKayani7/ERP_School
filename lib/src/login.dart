@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
-
 class Login extends StatefulWidget {
   const Login({super.key});
 
@@ -95,14 +94,14 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
                             ),
                             AddText(
                               marginLeft: 30,
-                              width: 175,
+                              //width: 175,
                               data: 'Sign in to continue',
                               textSize: 20,
                               color: AppColors.greyMainText,
                             ),
-                            const SizedBox(
-                              height: 20,
-                            )
+                            // const SizedBox(
+                            //   height: 20,
+                            // )
                           ],
                         )
                       ],
@@ -198,7 +197,9 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
                               Navigator.pushAndRemoveUntil(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => const StackCheck()),
+                                      builder: (context) => StackCheck(
+                                            studentName: 'Akshay Syal',
+                                          )),
                                   (context) => true);
                             },
                             gradientColor1: AppColors.appGradient2,

@@ -24,4 +24,16 @@ class AssetImages {
   static String lockIcon = 'assets/LockIcon.png';
   static String starPatternHalf = 'assets/StarPatternHalf.png';
   static String calenderIcon = 'assets/CalenderIcon.png';
+  static String shareIcon = 'assets/ShareIcon.png';
+  static String gradePercentage = 'assets/GradePercentage.png';
+  static String lunchBreakIcon = 'assets/LunchBreakIcon.png';
+
+  static String circleDesignForGrades = 'assets/CircleDesignForGrades.png';
+
+  static String lowerBackGroundPercentageScreenSvg =
+      'assets/LowerBackGroundPercentageScreenSvg.svg';
+  static String upperBackGroundPercentageScreen =
+      'assets/UpperBackGroundPercentageScreen.png';
+  static String lowerBackGroundPercentageScreen =
+      'assets/LowerBackGroundPercentageScreen.png';
 }

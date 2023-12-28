@@ -21,6 +21,9 @@ class AppColors {
   static const appGradient2 = Color(0xFF2855ae);
   static const buttonCenterIconColor = Color(0xFF6789CA);
 
+  static const blueBgResultCard = Color(0xFFE6EFFF);
+  static const marksColor = Color(0xFF3A3A3A);
+
   static const purpleBlue = Color(0xFF6688CA);
 
   static const blueShade = Color(0XFF6184C7);
