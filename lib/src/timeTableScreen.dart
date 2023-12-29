@@ -1,12 +1,8 @@
 // ignore_for_file: unnecessary_null_comparison
 
 import 'package:erp_school/src/model/DailyTimeTable.dart';
-import 'package:erp_school/src/model/DailyTimeTable.dart';
-import 'package:erp_school/src/model/weeklyTimeTable.dart';
-import 'package:erp_school/src/provider/courseProvider.dart';
 import 'package:erp_school/src/provider/timeTableProvider.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import 'package:erp_school/src/model/courseDetail.dart';
