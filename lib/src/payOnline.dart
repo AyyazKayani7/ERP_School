@@ -40,69 +40,65 @@ class _PayOnlineState extends State<PayOnline> {
               gradient: LinearGradient(
                   colors: [AppColors.appGradient1, AppColors.appGradient2]),
             ),
-            child: Column(
-              children: [
-                Container(
-                  height: MySize.size150,
-                  width: width,
-                  decoration: const BoxDecoration(
-                    //color: Colors.amber
-                    gradient: LinearGradient(colors: [
-                      AppColors.appGradient1,
-                      AppColors.appGradient2
-                    ]),
+            child: Container(
+              height: MySize.size150,
+              width: width,
+              decoration: const BoxDecoration(
+                //color: Colors.amber
+                gradient: LinearGradient(
+                    colors: [AppColors.appGradient1, AppColors.appGradient2]),
+              ),
+              child: Stack(
+                children: [
+                  Padding(
+                    padding:
+                        EdgeInsets.only(left: width * 0.1, top: height * 0.1),
+                    child: Image.asset(
+                        height: height * 0.2,
+                        width: width * 0.8,
+                        AssetImages.starPatternDashboard),
                   ),
-                  child: Stack(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(
-                            left: width * 0.1, top: height * 0.1),
-                        child: Image.asset(
-                            height: height * 0.2,
-                            width: width * 0.8,
-                            AssetImages.starPatternDashboard),
-                      ),
-                      Container(
-                        margin: EdgeInsets.symmetric(horizontal: width * 0.05
-                            //MySize.size18
-                            ),
-                        width: width * 0.9, //MySize.size360,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            GestureDetector(
-                              onTap: () => Navigator.pop(context),
-                              child: Image.asset(
-                                  width: MySize.size12,
-                                  height: MySize.size20,
-                                  AssetImages.backIconWhite),
-                            ),
-                            const SizedBox(
-                              width: 15,
-                            ),
-                            AddText(
-                              data: 'Fees Due',
-                              color: Colors.white,
-                              textSize: MySize.size20,
-                            ),
-                            Expanded(child: Container()),
-                          ],
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: width * 0.05
+                        //MySize.size18
                         ),
+                    width: width * 0.9, //MySize.size360,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                              width: MySize.size12,
+                              height: MySize.size20,
+                              AssetImages.backIconWhite),
+                          const SizedBox(
+                            width: 15,
+                          ),
+                          AddText(
+                            data: 'Pay Online',
+                            color: Colors.white,
+                            textSize: MySize.size20,
+                          ),
+                          Expanded(child: Container()),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           Expanded(
             child: Container(
               decoration: const BoxDecoration(
-                  //color: Colors.amber
-                  gradient: LinearGradient(colors: [
-                AppColors.appGradient1,
-                AppColors.appGradient2
-              ])),
+                //color: Colors.amber
+                gradient: LinearGradient(
+                  colors: [AppColors.appGradient1, AppColors.appGradient2],
+                ),
+              ),
               child: Container(
                 height: height,
                 width: width,
@@ -258,7 +254,7 @@ class _PayOnlineState extends State<PayOnline> {
                             AssetImages.rightSignInArrow),
                       ),
                       const SizedBox(
-                        height: 10,
+                        height: 30,
                       )
                     ],
                   ),

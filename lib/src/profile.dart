@@ -1,13 +1,19 @@
+import 'package:erp_school/src/model/student.dart';
+import 'package:erp_school/src/provider/profileProvider.dart';
 import 'package:erp_school/src/utilities/asset_images.dart';
 import 'package:erp_school/src/utilities/mySize.dart';
 import 'package:erp_school/src/widgets/addText.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
 import 'utilities/colors.dart';
+import 'widgets/addButton.dart';
 
 class Profile extends StatefulWidget {
-  const Profile({super.key});
+  Student s;
+  Profile({super.key, required this.s});
 
   @override
   State<Profile> createState() => _ProfileState();
@@ -18,6 +24,8 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
+    ProfileProvider profileProvider = Provider.of<ProfileProvider>(context);
+
     return Scaffold(
       body: Column(
         children: [
@@ -57,18 +65,25 @@ class _ProfileState extends State<Profile> {
                     children: [
                       GestureDetector(
                         onTap: () => Navigator.pop(context),
-                        child: Image.asset(
-                            width: MySize.size12,
-                            height: MySize.size20,
-                            AssetImages.backIconWhite),
-                      ),
-                      const SizedBox(
-                        width: 15,
-                      ),
-                      AddText(
-                        data: 'My Profile',
-                        color: Colors.white,
-                        textSize: MySize.size20,
+                        child: Row(
+                          children: [
+                            GestureDetector(
+                              onTap: () => Navigator.pop(context),
+                              child: Image.asset(
+                                  width: MySize.size12,
+                                  height: MySize.size20,
+                                  AssetImages.backIconWhite),
+                            ),
+                            const SizedBox(
+                              width: 15,
+                            ),
+                            AddText(
+                              data: 'My Profile',
+                              color: Colors.white,
+                              textSize: MySize.size20,
+                            ),
+                          ],
+                        ),
                       ),
                       Expanded(child: Container()),
                       Container(
@@ -142,13 +157,28 @@ class _ProfileState extends State<Profile> {
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Container(
-                              height: MySize.size75,
-                              width: MySize.size75,
-                              decoration: const BoxDecoration(
-                                  color: AppColors.greyShade,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(15))),
+                            Consumer<ProfileProvider>(
+                              builder: (context, value, child) => Container(
+                                height: MySize.size75,
+                                width: MySize.size75,
+                                decoration: const BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(15))),
+                                child: widget.s.profileImg != null
+                                    ? Image.network(
+                                        widget.s.profileImg!,
+                                        //profileProvider.imgLink,
+                                        fit: BoxFit.fill,
+                                      )
+                                    // value.profileImage != null
+                                    //     ? Image.file(
+                                    //         value.profileImage!,
+                                    //         fit: BoxFit.cover,
+                                    //       )
+                                    : Container(
+                                        color: AppColors.greyShade,
+                                      ),
+                              ),
                             ),
                             SizedBox(
                               width: MySize.size10,
@@ -157,7 +187,8 @@ class _ProfileState extends State<Profile> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 AddText(
-                                  data: 'Akshay Syal',
+                                  // data: 'Akshay Syal',
+                                  data: widget.s.name!,
                                   textSize: MySize.size20,
                                   textWeight: FontWeight.w700,
                                 ),
@@ -167,14 +198,16 @@ class _ProfileState extends State<Profile> {
                                 Row(
                                   children: [
                                     AddText(
-                                      data: 'Class VI-B ',
+                                      //data: 'Class VI-B ',
+                                      data: 'Class ${widget.s.className} ',
                                       color: AppColors.grey1,
                                       textWeight: FontWeight.w400,
                                     ),
-                                    const Text(
-                                      '| Roll No: 04',
+                                    Text(
+                                      // '| Roll No: 04',
+                                      '| Roll No: ${widget.s.rollNo}',
                                       maxLines: 2,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         color: AppColors.grey1,
                                         fontWeight: FontWeight.w400,
                                         //overflow: TextOverflow.ellipsis
@@ -185,10 +218,82 @@ class _ProfileState extends State<Profile> {
                               ],
                             ),
                             Expanded(child: Container()),
-                            ColorFiltered(
-                              colorFilter: const ColorFilter.mode(
-                                  AppColors.grey7777, BlendMode.srcIn),
-                              child: SvgPicture.asset(AssetImages.cameraIcon),
+                            GestureDetector(
+                              onTap: () {
+                                showDialog(
+                                    barrierDismissible: true,
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return Consumer<ProfileProvider>(
+                                        builder: (context, value, child) =>
+                                            AlertDialog(
+                                          //backgroundColor: AppColors.themeColor,
+                                          title: AddText(
+                                            height: 30,
+                                            textWeight: FontWeight.bold,
+                                            data: 'Select Image Source...',
+                                            textSize: 22,
+                                          ),
+                                          actions: [
+                                            Align(
+                                              alignment: Alignment.topCenter,
+                                              child: AddButton(
+                                                gradientColor1:
+                                                    AppColors.themeColor,
+                                                gradientColor2:
+                                                    AppColors.themeColor,
+                                                data: 'Camera',
+                                                onTap: value.isImageLoading
+                                                    ? () {}
+                                                    : () {
+                                                        // value.setIsImageLoading(true);
+                                                        // debugPrint(
+                                                        //     'image status::::${value.isImageLoading.toString()} ');
+                                                        value.pickImage(
+                                                            ImageSource.camera,
+                                                            context);
+                                                        // value.setIsImageLoading(false);
+                                                        // debugPrint(
+                                                        //     'image status::::${value.isImageLoading.toString()} ');
+                                                        Navigator.pop(context);
+                                                      },
+                                                color: AppColors.themeColor,
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              height: 20,
+                                            ),
+                                            Align(
+                                              alignment: Alignment.topCenter,
+                                              child: AddButton(
+                                                gradientColor1:
+                                                    AppColors.themeColor,
+                                                gradientColor2:
+                                                    AppColors.themeColor,
+                                                data: 'Gallery',
+                                                onTap: () {
+                                                  value.pickImage(
+                                                      ImageSource.gallery,
+                                                      context);
+                                                  Navigator.pop(context);
+                                                },
+                                                color:
+                                                    Color(AppColors.colorTheme),
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    });
+                              },
+                              child: ColorFiltered(
+                                colorFilter: const ColorFilter.mode(
+                                    AppColors.grey7777, BlendMode.srcIn),
+                                child: SvgPicture.asset(AssetImages.cameraIcon),
+                              ),
                             ),
                           ],
                         ),
@@ -219,7 +324,7 @@ class _ProfileState extends State<Profile> {
                                   height: MySize.size8,
                                 ),
                                 AddText(
-                                  data: '1234 4325 4567 1234',
+                                  data: widget.s.adharNo!,
                                   textSize: MySize.size16,
                                   textWeight: FontWeight.w600,
                                 ),
@@ -250,7 +355,7 @@ class _ProfileState extends State<Profile> {
                                   height: MySize.size8,
                                 ),
                                 AddText(
-                                  data: '2020-2021',
+                                  data: widget.s.academicYear!,
                                   textSize: MySize.size16,
                                   textWeight: FontWeight.w600,
                                 ),
@@ -301,7 +406,7 @@ class _ProfileState extends State<Profile> {
                                     children: [
                                       SizedBox(
                                         child: AddText(
-                                          data: 'VI',
+                                          data: widget.s.adClass!,
                                           textSize: MySize.size16,
                                           textWeight: FontWeight.w600,
                                         ),
@@ -349,7 +454,7 @@ class _ProfileState extends State<Profile> {
                                     children: [
                                       SizedBox(
                                         child: AddText(
-                                          data: 'T00221',
+                                          data: widget.s.oldAdNo!,
                                           textSize: MySize.size16,
                                           textWeight: FontWeight.w600,
                                         ),
@@ -408,7 +513,7 @@ class _ProfileState extends State<Profile> {
                                     children: [
                                       SizedBox(
                                         child: AddText(
-                                          data: '01 Apr 2018',
+                                          data: widget.s.doa.toString(),
                                           textSize: MySize.size16,
                                           textWeight: FontWeight.w600,
                                         ),
@@ -456,7 +561,7 @@ class _ProfileState extends State<Profile> {
                                     children: [
                                       SizedBox(
                                         child: AddText(
-                                          data: '22 July 1996',
+                                          data: widget.s.dob.toString(),
                                           textSize: MySize.size16,
                                           textWeight: FontWeight.w600,
                                         ),
@@ -515,7 +620,7 @@ class _ProfileState extends State<Profile> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           AddText(
-                                            data: 'parentboth84@gmail.com',
+                                            data: widget.s.parentMail!,
                                             textSize: MySize.size16,
                                             textWeight: FontWeight.w600,
                                           ),
@@ -571,7 +676,7 @@ class _ProfileState extends State<Profile> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           AddText(
-                                            data: 'Monica Larson',
+                                            data: widget.s.motherName!,
                                             textSize: MySize.size16,
                                             textWeight: FontWeight.w600,
                                           ),
@@ -627,7 +732,7 @@ class _ProfileState extends State<Profile> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           AddText(
-                                            data: 'Bernard Tylor',
+                                            data: widget.s.fatherName!,
                                             textSize: MySize.size16,
                                             textWeight: FontWeight.w600,
                                           ),
@@ -683,7 +788,7 @@ class _ProfileState extends State<Profile> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           AddText(
-                                            data: 'Karol Bagh,Delhi',
+                                            data: widget.s.permanentAddress!,
                                             textSize: MySize.size16,
                                             textWeight: FontWeight.w600,
                                           ),

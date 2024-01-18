@@ -53,31 +53,31 @@ class _AskDoubtsState extends State<AskDoubts> {
                       ),
                   width: width * 0.9, //MySize.size360,
 
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                          Future.delayed(const Duration(seconds: 1), () {
-                            //timeTableProvider.clear();
-                          });
-                        },
-                        child: Image.asset(
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                      Future.delayed(const Duration(seconds: 1), () {
+                        //timeTableProvider.clear();
+                      });
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
                             width: MySize.size12,
                             height: MySize.size20,
                             AssetImages.backIconWhite),
-                      ),
-                      const SizedBox(
-                        width: 15,
-                      ),
-                      AddText(
-                        data: 'Ask Doubt',
-                        color: Colors.white,
-                        textSize: MySize.size20,
-                      ),
-                      Expanded(child: Container()),
-                    ],
+                        const SizedBox(
+                          width: 15,
+                        ),
+                        AddText(
+                          data: 'Ask Doubt',
+                          color: Colors.white,
+                          textSize: MySize.size20,
+                        ),
+                        Expanded(child: Container()),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -184,9 +184,7 @@ class _AskDoubtsState extends State<AskDoubts> {
           ),
           Padding(
             padding: const EdgeInsets.only(top: 8.0),
-            child: Expanded(
-                child:
-                    Image.asset(AssetImages.lowerBackGroundPercentageScreen)),
+            child: Image.asset(AssetImages.lowerBackGroundPercentageScreen),
           )
         ],
       ),

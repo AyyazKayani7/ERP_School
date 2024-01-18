@@ -15,11 +15,28 @@ class AppColors {
   static const bg = Color(0xFFFCFAFA);
   static const shadeGreen = Color(0xFF07B642);
   static const shade1Green = Color(0xFF0CBC8B);
-  static const greyMainText = Color(0XFFFFFFFF);
+  static const greyMainTextFFF = Color(0XFFFFFFFF);
   static const greyTextColor = Color(0xFFA5A5A5);
+  static const grey = Color(0xFFCACACA);
   static const appGradient1 = Color(0XFF7292CF);
   static const appGradient2 = Color(0xFF2855ae);
+  static const appGradient2WithOpacity = Color(0xFF2855ae);
   static const buttonCenterIconColor = Color(0xFF6789CA);
+  static const blueColor = Color(0xFF6789CA);
+  static const blueLightColor = Color(0xFF96B1E5);
+  static const blueTextColor = Color(0xFF6688CA);
+  static const sundayCell = Color(0xFFD4E2FF);
+  static const lightRed = Color(0xFFFFB1B1);
+  static const red = Color(0xFFE92020);
+  static const green = Color(0xFF0BAC00);
+  static const lightGreen = Color(0xFFA9F2A4);
+  static const correctOption = Color(0xFF0BAC00);
+  static const wrongOption = Color(0xFFE92E30);
+
+  static const progressTimeBar = Color(0xFF46D9BF);
+  static const progressTimeBarBackground = Color(0xFF05518B);
+  static const card1 = Color(0xFF859FD1);
+  static const card2 = Color(0xFF6585C6);
 
   static const blueBgResultCard = Color(0xFFE6EFFF);
   static const marksColor = Color(0xFF3A3A3A);
@@ -36,4 +53,5 @@ class AppColors {
 
   static const grey7777 = Color(0xFF777777);
   static const greyDivider = Color(0xFFE1E3E8);
+  static const greyDivider1 = Color(0XFFDBDBDB);
 }

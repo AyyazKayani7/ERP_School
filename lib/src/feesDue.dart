@@ -1,3 +1,4 @@
+import 'package:erp_school/src/controller/studentController.dart';
 import 'package:erp_school/src/payOnline.dart';
 import 'package:erp_school/src/widgets/buttonCenterIcon.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 
 import 'model/fee.dart';
+import 'model/fees.dart';
 import 'utilities/asset_images.dart';
 import 'utilities/colors.dart';
 import 'utilities/mySize.dart';
@@ -18,6 +20,24 @@ class FeesDue extends StatefulWidget {
 }
 
 class _FeesDueState extends State<FeesDue> {
+  bool isDataLoaded = false;
+  List<Fees> flist = [];
+  getFees() async {
+    StudentController s = StudentController();
+    flist = await s.getFees();
+    if (flist.isNotEmpty) {
+      isDataLoaded = true;
+      setState(() {});
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getFees();
+  }
+
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -79,52 +99,54 @@ class _FeesDueState extends State<FeesDue> {
                     //MySize.size18
                     ),
                 width: width * 0.9, //MySize.size360,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    GestureDetector(
-                      onTap: () => Navigator.pop(context),
-                      child: Image.asset(
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
                           width: MySize.size12,
                           height: MySize.size20,
                           AssetImages.backIconWhite),
-                    ),
-                    const SizedBox(
-                      width: 15,
-                    ),
-                    AddText(
-                      data: 'Fees Due',
-                      color: Colors.white,
-                      textSize: MySize.size20,
-                    ),
-                    Expanded(child: Container()),
-                    // Container(
-                    //   height: MySize.size28,
-                    //   width: MySize.size84,
-                    //   decoration: const BoxDecoration(
-                    //       //border: Border.all(width: 1),
-                    //       color: Colors.white,
-                    //       borderRadius: BorderRadius.all(Radius.circular(100))),
-                    //   child: Row(
-                    //     mainAxisAlignment: MainAxisAlignment.center,
-                    //     children: [
-                    //       Image.asset(
-                    //           width: MySize.size12,
-                    //           height: MySize.size20,
-                    //           AssetImages.checkedIcon),
-                    //       const SizedBox(
-                    //         width: 5,
-                    //       ),
-                    //       AddText(
-                    //         data: 'Done',
-                    //         color: AppColors.purpleBlue,
-                    //         textSize: 13,
-                    //         textWeight: FontWeight.w700,
-                    //       )
-                    //     ],
-                    //   ),
-                    // )
-                  ],
+                      const SizedBox(
+                        width: 15,
+                      ),
+                      AddText(
+                        data: 'Fees Due',
+                        color: Colors.white,
+                        textSize: MySize.size20,
+                      ),
+                      Expanded(child: Container()),
+                      // Container(
+                      //   height: MySize.size28,
+                      //   width: MySize.size84,
+                      //   decoration: const BoxDecoration(
+                      //       //border: Border.all(width: 1),
+                      //       color: Colors.white,
+                      //       borderRadius: BorderRadius.all(Radius.circular(100))),
+                      //   child: Row(
+                      //     mainAxisAlignment: MainAxisAlignment.center,
+                      //     children: [
+                      //       Image.asset(
+                      //           width: MySize.size12,
+                      //           height: MySize.size20,
+                      //           AssetImages.checkedIcon),
+                      //       const SizedBox(
+                      //         width: 5,
+                      //       ),
+                      //       AddText(
+                      //         data: 'Done',
+                      //         color: AppColors.purpleBlue,
+                      //         textSize: 13,
+                      //         textWeight: FontWeight.w700,
+                      //       )
+                      //     ],
+                      //   ),
+                      // )
+                    ],
+                  ),
                 ),
               ),
               //),
@@ -145,222 +167,229 @@ class _FeesDueState extends State<FeesDue> {
               borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(30), topRight: Radius.circular(30)),
             ),
-            child: ListView.builder(
-                itemCount: fList.length,
-                itemBuilder: (context, index) {
-                  Fee fd = Fee();
-                  fd = fList[index];
-                  String d = monthFormat.format(fd.paymentDate!);
-                  return Column(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(15)),
-                          border: Border.all(
-                              width: 1, color: AppColors.greyDivider),
-                        ),
-                        margin: EdgeInsets.only(
-                          // top: MySize.size16,
-                          left: MySize.size16,
-                          right: MySize.size16,
-                        ),
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 11, top: 11, right: 11),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  AddText(
-                                    data: 'Receipt No.',
-                                    textWeight: FontWeight.w400,
-                                    textSize: 14,
-                                    color: AppColors.greyTextColor,
-                                  ),
-                                  AddText(
-                                    data: fd.receiptNo!,
-                                    textWeight: FontWeight.w600,
-                                    textSize: 14,
-                                  ),
-                                ],
-                              ),
+            child: !isDataLoaded
+                ? Center(child: CircularProgressIndicator())
+                : ListView.builder(
+                    itemCount: flist.length,
+                    itemBuilder: (context, index) {
+                      Fees fd = Fees();
+                      fd = flist[index];
+                      String d = monthFormat.format(fd.paymentDate!);
+                      return Column(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(15)),
+                              border: Border.all(
+                                  width: 1, color: AppColors.greyDivider),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 11, top: 11, right: 11),
-                              child: Container(
-                                margin: EdgeInsets.only(
-                                  top: MySize.size10,
+                            margin: EdgeInsets.only(
+                              // top: MySize.size16,
+                              left: MySize.size16,
+                              right: MySize.size16,
+                            ),
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 11, top: 11, right: 11),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      AddText(
+                                        data: 'Receipt No.',
+                                        textWeight: FontWeight.w400,
+                                        textSize: 14,
+                                        color: AppColors.greyTextColor,
+                                      ),
+                                      AddText(
+                                        data: fd.receiptNo!,
+                                        textWeight: FontWeight.w600,
+                                        textSize: 14,
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                                child: const Divider(
-                                  thickness: 1,
-                                  height: 1,
-                                  color: AppColors.greyDivider,
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 11, top: 14, right: 11),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  AddText(
-                                    data: 'Month',
-                                    textWeight: FontWeight.w400,
-                                    textSize: 14,
-                                    color: AppColors.greyTextColor,
-                                  ),
-                                  AddText(
-                                    data: d,
-                                    textWeight: FontWeight.w600,
-                                    textSize: 14,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            // const SizedBox(
-                            //   height: 14,
-                            // ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 11, top: 14, right: 11),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  AddText(
-                                    data: 'Payment Date',
-                                    textWeight: FontWeight.w400,
-                                    textSize: 14,
-                                    color: AppColors.greyTextColor,
-                                  ),
-                                  AddText(
-                                    data:
-                                        dateMonthFormat.format(fd.paymentDate!),
-                                    textWeight: FontWeight.w600,
-                                    textSize: 14,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            fd.status == 1
-                                ? Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 11, top: 14, right: 11),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        AddText(
-                                          data: 'Pay Mode',
-                                          textWeight: FontWeight.w400,
-                                          textSize: 14,
-                                          color: AppColors.greyTextColor,
-                                        ),
-                                        AddText(
-                                          data: "Cash on Counter",
-                                          textWeight: FontWeight.w600,
-                                          textSize: 14,
-                                        ),
-                                      ],
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 11, top: 11, right: 11),
+                                  child: Container(
+                                    margin: EdgeInsets.only(
+                                      top: MySize.size10,
                                     ),
-                                  )
-                                : Container(),
-                            // const SizedBox(
-                            //   height: 5,
-                            // ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 11, top: 14, right: 11),
-                              child: Container(
-                                margin: EdgeInsets.only(
-                                  top: MySize.size10,
-                                ),
-                                child: const Divider(
-                                  thickness: 1,
-                                  height: 1,
-                                  color: AppColors.greyDivider,
-                                ),
-                              ),
-                            ),
-                            // const SizedBox(
-                            //   height: 10,
-                            // ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 11, top: 11, right: 11),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  AddText(
-                                    data: 'Total Pending Amount',
-                                    textWeight: FontWeight.w400,
-                                    textSize: 14,
-                                    color: AppColors.greyTextColor,
+                                    child: const Divider(
+                                      thickness: 1,
+                                      height: 1,
+                                      color: AppColors.greyDivider,
+                                    ),
                                   ),
-                                  AddText(
-                                    data: fd.totalAmount.toString(),
-                                    textWeight: FontWeight.w600,
-                                    textSize: 14,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 11, top: 14, right: 11),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      AddText(
+                                        data: 'Month',
+                                        textWeight: FontWeight.w400,
+                                        textSize: 14,
+                                        color: AppColors.greyTextColor,
+                                      ),
+                                      AddText(
+                                        data: d,
+                                        textWeight: FontWeight.w600,
+                                        textSize: 14,
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
+                                ),
+                                // const SizedBox(
+                                //   height: 14,
+                                // ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 11, top: 14, right: 11),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      AddText(
+                                        data: 'Payment Date',
+                                        textWeight: FontWeight.w400,
+                                        textSize: 14,
+                                        color: AppColors.greyTextColor,
+                                      ),
+                                      AddText(
+                                        data: dateMonthFormat
+                                            .format(fd.paymentDate!),
+                                        textWeight: FontWeight.w600,
+                                        textSize: 14,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                fd.status == 1
+                                    ? Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: 11, top: 14, right: 11),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            AddText(
+                                              data: 'Pay Mode',
+                                              textWeight: FontWeight.w400,
+                                              textSize: 14,
+                                              color: AppColors.greyTextColor,
+                                            ),
+                                            AddText(
+                                              data: "Cash on Counter",
+                                              textWeight: FontWeight.w600,
+                                              textSize: 14,
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    : Container(),
+                                // const SizedBox(
+                                //   height: 5,
+                                // ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 11, top: 14, right: 11),
+                                  child: Container(
+                                    margin: EdgeInsets.only(
+                                      top: MySize.size10,
+                                    ),
+                                    child: const Divider(
+                                      thickness: 1,
+                                      height: 1,
+                                      color: AppColors.greyDivider,
+                                    ),
+                                  ),
+                                ),
+                                // const SizedBox(
+                                //   height: 10,
+                                // ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 11, top: 11, right: 11),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      AddText(
+                                        data: 'Total Pending Amount',
+                                        textWeight: FontWeight.w400,
+                                        textSize: 14,
+                                        color: AppColors.greyTextColor,
+                                      ),
+                                      AddText(
+                                        data: fd.amount.toString(),
+                                        textWeight: FontWeight.w600,
+                                        textSize: 14,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 12,
+                                ),
+                                ButtonCenterIcon(
+                                  height: 45,
+                                  textWeight: FontWeight.w600,
+                                  textSize: 14,
+                                  gradientColor1:
+                                      AppColors.buttonCenterIconColor,
+                                  gradientColor2:
+                                      AppColors.buttonCenterIconColor,
+                                  width: width,
+                                  iconWidthForTextCenter: 25,
+                                  bottomLeftRadius: 15,
+                                  bottomRightRadius: 15,
+                                  buttonSuffixIcon: SvgPicture.asset(
+                                      height: 12.5,
+                                      width: 17,
+                                      fd.status == 1
+                                          ? AssetImages.downloadIcon
+                                          : AssetImages.rightSignInArrow),
+                                  data: fd.status == 1 ? "Download" : 'Pay Now',
+                                  onTap: fd.status == 1
+                                      ? () {
+                                          //// Fee Paid Logic
+                                        }
+                                      : () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      PayOnline(
+                                                        dateOfFee:
+                                                            fd.paymentDate!,
+                                                        totalFee: int.parse(
+                                                            fd.amount!),
+                                                      )));
+                                          //// Fee Due Logic
+                                        },
+                                )
+                              ],
                             ),
-                            const SizedBox(
-                              height: 12,
-                            ),
-                            ButtonCenterIcon(
-                              height: 45,
-                              textWeight: FontWeight.w600,
-                              textSize: 14,
-                              gradientColor1: AppColors.buttonCenterIconColor,
-                              gradientColor2: AppColors.buttonCenterIconColor,
-                              width: width,
-                              iconWidthForTextCenter: 25,
-                              bottomLeftRadius: 15,
-                              bottomRightRadius: 15,
-                              buttonSuffixIcon: SvgPicture.asset(
-                                  height: 12.5,
-                                  width: 17,
-                                  fd.status == 1
-                                      ? AssetImages.downloadIcon
-                                      : AssetImages.rightSignInArrow),
-                              data: fd.status == 1 ? "Download" : 'Pay Now',
-                              onTap: fd.status == 1
-                                  ? () {
-                                      //// Fee Paid Logic
-                                    }
-                                  : () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => PayOnline(
-                                                    dateOfFee: fd.paymentDate!,
-                                                    totalFee: fd.totalAmount!,
-                                                  )));
-                                      //// Fee Due Logic
-                                    },
-                            )
-                          ],
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 16,
-                      ),
-                      // index == fList.length - 1
-                      //     ? const SizedBox(
-                      //         height: 16,
-                      //       )
-                      //     : Container()
-                    ],
-                  );
-                }),
+                          ),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          // index == fList.length - 1
+                          //     ? const SizedBox(
+                          //         height: 16,
+                          //       )
+                          //     : Container()
+                        ],
+                      );
+                    }),
           ),
         )),
       ]),

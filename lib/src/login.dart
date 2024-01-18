@@ -5,9 +5,12 @@ import 'package:erp_school/src/utilities/colors.dart';
 import 'package:erp_school/src/widgets/TextFieldPassword.dart';
 import 'package:erp_school/src/widgets/addText.dart';
 import 'package:erp_school/src/widgets/buttonSuffixIcon.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -97,7 +100,7 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
                               //width: 175,
                               data: 'Sign in to continue',
                               textSize: 20,
-                              color: AppColors.greyMainText,
+                              color: AppColors.greyMainTextFFF,
                             ),
                             // const SizedBox(
                             //   height: 20,
@@ -194,13 +197,36 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
                                     width: 25,
                                     AssetImages.rightSignInArrow)),
                             onTap: () {
-                              Navigator.pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => StackCheck(
-                                            studentName: 'Akshay Syal',
-                                          )),
-                                  (context) => true);
+                              FirebaseAuth auth = FirebaseAuth.instance;
+                              auth
+                                  .signInWithEmailAndPassword(
+                                      email: email.text.trim(),
+                                      password: password.text)
+                                  .then((value) async {
+                                // SharedPreferences sharedPereference =
+                                //     await SharedPreferences.getInstance();
+                                // sharedPereference.setString('aa', 'aa');
+                                // Navigator.pushReplacement(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //     builder: (context) => StackCheck(
+                                //       studentName: 'Akshay Syal',
+                                //     ),
+
+                                //   ),
+
+                                // );
+                                Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => StackCheck(
+                                              email: email.text,
+                                            )),
+                                    (context) => false);
+                              }).onError((error, stackTrace) {
+                                Fluttertoast.showToast(
+                                    msg: 'Something went wrong');
+                              });
                             },
                             gradientColor1: AppColors.appGradient2,
                             gradientColor2: AppColors.appGradient1,

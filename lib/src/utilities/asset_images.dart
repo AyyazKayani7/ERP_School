@@ -27,6 +27,12 @@ class AssetImages {
   static String shareIcon = 'assets/ShareIcon.png';
   static String gradePercentage = 'assets/GradePercentage.png';
   static String lunchBreakIcon = 'assets/LunchBreakIcon.png';
+  static String clockIcon = 'assets/ClockIcon.png';
+  static String clockIcon1 = 'assets/ClockIcon1.png';
+  static String clockIconBlue = 'assets/ClockIconBlue.png';
+  static String quizPersonsIcon = 'assets/QuizPersonsIcon.png';
+  static String supportIcon = 'assets/SupportIcon.png';
+  static String pdfIcon = 'assets/PdfIcon.png';
 
   static String circleDesignForGrades = 'assets/CircleDesignForGrades.png';
 

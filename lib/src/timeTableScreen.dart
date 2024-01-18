@@ -19,10 +19,8 @@ class TimeTableScreen extends StatefulWidget {
 }
 
 class _TimeTableScreenState extends State<TimeTableScreen> {
-  @override
-  Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height;
-    double width = MediaQuery.of(context).size.width;
+  List<DailyTimeTable> weeklyTimeTable = [];
+  void initializeData() {
     CourseDetail c1 = CourseDetail(
         courseName: 'Computer Science',
         startTime: DateTime(2023, 12, 20, 8, 15, 0),
@@ -135,28 +133,48 @@ class _TimeTableScreenState extends State<TimeTableScreen> {
         DailyTimeTable.setValues(tuesdayCoursesList, 'Tuesday'
             //DateTime(2023, 12, 18)
             );
-    List<DailyTimeTable> weeklyTimeTable = [];
     weeklyTimeTable.add(mondayCourseList);
     weeklyTimeTable.add(tuesdayCourseList);
-    //final courseProvider = Provider.of<CourseProvider>(context, listen: false);
-    //DailyTimeTable selectedDailyTimeTable = DailyTimeTable();
-    TimeTableProvider timeTableProvider =
-        Provider.of<TimeTableProvider>(context, listen: false);
+  }
+
+  TimeTableProvider? timeTableProvider;
+  @override
+  void initState() {
+    // TODO: implement didChangeDependencies
+    super.initState();
+    if (timeTableProvider == null) {
+      timeTableProvider =
+          Provider.of<TimeTableProvider>(context, listen: false);
+
+      // Other initializations based on timeTableProvider
+      initializeData();
+    }
+
     for (var element in weeklyTimeTable) {
       if (element.day == "Monday") {
-        //selectedDailyTimeTable = element;
-        timeTableProvider.setCourseDetails(element.cl!);
+        // selectedDailyTimeTable = element;
+        timeTableProvider!.setCourseDetails(element.cl!);
         break;
       }
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
+
+    //final courseProvider = Provider.of<CourseProvider>(context, listen: false);
+    //DailyTimeTable selectedDailyTimeTable = DailyTimeTable();
+
     //WeeklyTimeTable weeklyTimeTable = WeeklyTimeTable(mondayCourseList);
 
-    debugPrint(timeTableProvider.getIndex.toString());
+    // debugPrint(timeTableProvider.getIndex.toString());
     return WillPopScope(
       onWillPop: () async {
         Future.delayed(const Duration(seconds: 1), () {
           // Call timeTableProvider.clear() after the specified duration
-          timeTableProvider.clear();
+          timeTableProvider!.clear();
         });
         return true;
       },
@@ -195,34 +213,41 @@ class _TimeTableScreenState extends State<TimeTableScreen> {
                         ),
                     width: width * 0.9, //MySize.size360,
 
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.pop(context);
-                            Future.delayed(const Duration(seconds: 1), () {
-                              timeTableProvider.clear();
-                            });
-                          },
-                          child: Image.asset(
-                              width: MySize.size12,
-                              height: MySize.size20,
-                              AssetImages.backIconWhite),
+                    child: Consumer<TimeTableProvider>(
+                        builder: (context, value, child) {
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                          Future.delayed(const Duration(seconds: 1), () {
+                            // timeTableProvider.clear();
+                            value.clear();
+                          });
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Consumer<TimeTableProvider>(
+                                builder: (context, value, child) {
+                              return Image.asset(
+                                  width: MySize.size12,
+                                  height: MySize.size20,
+                                  AssetImages.backIconWhite);
+                            }),
+                            const SizedBox(
+                              width: 15,
+                            ),
+                            AddText(
+                              data: 'Timetable',
+                              color: Colors.white,
+                              textSize: MySize.size20,
+                            ),
+                            Expanded(child: Container()),
+                          ],
                         ),
-                        const SizedBox(
-                          width: 15,
-                        ),
-                        AddText(
-                          data: 'Timetable',
-                          color: Colors.white,
-                          textSize: MySize.size20,
-                        ),
-                        Expanded(child: Container()),
-                      ],
-                    ),
+                      );
+                    }),
+                    //),
                   ),
-                  //),
                 ],
               ),
             ),
@@ -261,7 +286,7 @@ class _TimeTableScreenState extends State<TimeTableScreen> {
                               width: 1, color: AppColors.greyDivider),
                         ),
                         child: Consumer<TimeTableProvider>(
-                            builder: (context, timeTableProvider, child) {
+                            builder: (context, value, child) {
                           return Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -269,15 +294,14 @@ class _TimeTableScreenState extends State<TimeTableScreen> {
                                 GestureDetector(
                                   onTap: () {
                                     //element.cl![0].toJson().toString()
-                                    timeTableProvider.setIndex(0);
+                                    value.setIndex(0);
                                     for (var element in weeklyTimeTable) {
                                       if (element == null) {
-                                        timeTableProvider.clear();
+                                        value.clear();
                                       } else {
                                         if (element.day == "Monday") {
                                           //selectedDailyTimeTable = element;
-                                          timeTableProvider
-                                              .setCourseDetails(element.cl!);
+                                          value.setCourseDetails(element.cl!);
                                           break;
                                         }
                                       }
@@ -285,14 +309,14 @@ class _TimeTableScreenState extends State<TimeTableScreen> {
                                   },
                                   child: Container(
                                     padding: EdgeInsets.only(
-                                        left: timeTableProvider.getIndex != 0
+                                        left: value.getIndex != 0
                                             ? width * 0.01
                                             : 0),
                                     height: 27,
-                                    width: timeTableProvider.getIndex == 0
-                                        ? 77
-                                        : 50,
-                                    decoration: timeTableProvider.getIndex == 0
+                                    width: value.getIndex == 0
+                                        ? MySize.size77
+                                        : MySize.size50,
+                                    decoration: value.getIndex == 0
                                         ? const BoxDecoration(
                                             color: Colors.blue,
                                             borderRadius: BorderRadius.all(
@@ -302,7 +326,7 @@ class _TimeTableScreenState extends State<TimeTableScreen> {
                                         : const BoxDecoration(),
                                     child: Center(
                                       child: AddText(
-                                        color: timeTableProvider.getIndex == 0
+                                        color: value.getIndex == 0
                                             ? Colors.white
                                             : Colors.black,
                                         data: 'MON',
@@ -314,15 +338,14 @@ class _TimeTableScreenState extends State<TimeTableScreen> {
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    timeTableProvider.setIndex(1);
+                                    value.setIndex(1);
                                     for (var element in weeklyTimeTable) {
                                       if (element == null) {
-                                        timeTableProvider.clear();
+                                        value.clear();
                                       } else {
                                         if (element.day == "Tuesday") {
                                           //selectedDailyTimeTable = element;
-                                          timeTableProvider
-                                              .setCourseDetails(element.cl!);
+                                          value.setCourseDetails(element.cl!);
                                           break;
                                         }
                                       }
@@ -330,10 +353,10 @@ class _TimeTableScreenState extends State<TimeTableScreen> {
                                   },
                                   child: Container(
                                     height: 27,
-                                    width: timeTableProvider.getIndex == 1
-                                        ? 77
-                                        : 50,
-                                    decoration: timeTableProvider.getIndex == 1
+                                    width: value.getIndex == 1
+                                        ? MySize.size77
+                                        : MySize.size50,
+                                    decoration: value.getIndex == 1
                                         ? const BoxDecoration(
                                             color: Colors.blue,
                                             borderRadius: BorderRadius.all(
@@ -343,7 +366,7 @@ class _TimeTableScreenState extends State<TimeTableScreen> {
                                         : const BoxDecoration(),
                                     child: Center(
                                       child: AddText(
-                                        color: timeTableProvider.getIndex == 1
+                                        color: value.getIndex == 1
                                             ? Colors.white
                                             : Colors.black,
                                         data: 'TUE',
@@ -355,15 +378,14 @@ class _TimeTableScreenState extends State<TimeTableScreen> {
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    timeTableProvider.setIndex(2);
+                                    value.setIndex(2);
                                     for (var element in weeklyTimeTable) {
                                       if (element == null) {
-                                        timeTableProvider.clear();
+                                        value.clear();
                                       } else {
                                         if (element.day == "Wednesday") {
                                           //selectedDailyTimeTable = element;
-                                          timeTableProvider
-                                              .setCourseDetails(element.cl!);
+                                          value.setCourseDetails(element.cl!);
                                           break;
                                         }
                                       }
@@ -371,10 +393,10 @@ class _TimeTableScreenState extends State<TimeTableScreen> {
                                   },
                                   child: Container(
                                     height: 27,
-                                    width: timeTableProvider.getIndex == 2
-                                        ? 77
-                                        : 50,
-                                    decoration: timeTableProvider.getIndex == 2
+                                    width: value.getIndex == 2
+                                        ? MySize.size77
+                                        : MySize.size50,
+                                    decoration: value.getIndex == 2
                                         ? const BoxDecoration(
                                             color: Colors.blue,
                                             borderRadius: BorderRadius.all(
@@ -384,7 +406,7 @@ class _TimeTableScreenState extends State<TimeTableScreen> {
                                         : const BoxDecoration(),
                                     child: Center(
                                       child: AddText(
-                                        color: timeTableProvider.getIndex == 2
+                                        color: value.getIndex == 2
                                             ? Colors.white
                                             : Colors.black,
                                         data: 'WED',
@@ -397,7 +419,7 @@ class _TimeTableScreenState extends State<TimeTableScreen> {
 
                                 GestureDetector(
                                   onTap: () {
-                                    timeTableProvider.setIndex(3);
+                                    value.setIndex(3);
                                     for (var element in weeklyTimeTable) {
                                       if (element.day == "Thursday") {
                                         //selectedDailyTimeTable = element;
@@ -406,10 +428,10 @@ class _TimeTableScreenState extends State<TimeTableScreen> {
                                   },
                                   child: Container(
                                     height: 27,
-                                    width: timeTableProvider.getIndex == 3
-                                        ? 77
-                                        : 50,
-                                    decoration: timeTableProvider.getIndex == 3
+                                    width: value.getIndex == 3
+                                        ? MySize.size77
+                                        : MySize.size50,
+                                    decoration: value.getIndex == 3
                                         ? const BoxDecoration(
                                             color: Colors.blue,
                                             borderRadius: BorderRadius.all(
@@ -419,7 +441,7 @@ class _TimeTableScreenState extends State<TimeTableScreen> {
                                         : const BoxDecoration(),
                                     child: Center(
                                       child: AddText(
-                                        color: timeTableProvider.getIndex == 3
+                                        color: value.getIndex == 3
                                             ? Colors.white
                                             : Colors.black,
                                         data: 'THU',
@@ -432,7 +454,7 @@ class _TimeTableScreenState extends State<TimeTableScreen> {
 
                                 GestureDetector(
                                   onTap: () {
-                                    timeTableProvider.setIndex(4);
+                                    value.setIndex(4);
                                     for (var element in weeklyTimeTable) {
                                       if (element.day == "Friday") {
                                         // selectedDailyTimeTable = element;
@@ -441,10 +463,10 @@ class _TimeTableScreenState extends State<TimeTableScreen> {
                                   },
                                   child: Container(
                                     height: 27,
-                                    width: timeTableProvider.getIndex == 4
-                                        ? 77
-                                        : 50,
-                                    decoration: timeTableProvider.getIndex == 4
+                                    width: value.getIndex == 4
+                                        ? MySize.size77
+                                        : MySize.size50,
+                                    decoration: value.getIndex == 4
                                         ? const BoxDecoration(
                                             color: Colors.blue,
                                             borderRadius: BorderRadius.all(
@@ -454,7 +476,7 @@ class _TimeTableScreenState extends State<TimeTableScreen> {
                                         : const BoxDecoration(),
                                     child: Center(
                                       child: AddText(
-                                        color: timeTableProvider.getIndex == 4
+                                        color: value.getIndex == 4
                                             ? Colors.white
                                             : Colors.black,
                                         data: 'FRI',
@@ -467,9 +489,7 @@ class _TimeTableScreenState extends State<TimeTableScreen> {
 
                                 GestureDetector(
                                   onTap: () {
-                                    timeTableProvider.setIndex(5);
-                                    debugPrint(
-                                        timeTableProvider.getIndex.toString());
+                                    value.setIndex(5);
                                     for (var element in weeklyTimeTable) {
                                       if (element.day == "Saturday") {
                                         //selectedDailyTimeTable = element;
@@ -478,14 +498,14 @@ class _TimeTableScreenState extends State<TimeTableScreen> {
                                   },
                                   child: Container(
                                     padding: EdgeInsets.only(
-                                        right: timeTableProvider.getIndex != 5
+                                        right: value.getIndex != 5
                                             ? width * 0.01
                                             : 0),
                                     height: 27,
-                                    width: timeTableProvider.getIndex == 5
-                                        ? 77
-                                        : 50,
-                                    decoration: timeTableProvider.getIndex == 5
+                                    width: value.getIndex == 5
+                                        ? MySize.size77
+                                        : MySize.size50,
+                                    decoration: value.getIndex == 5
                                         ? const BoxDecoration(
                                             color: Colors.blue,
                                             borderRadius: BorderRadius.all(
@@ -495,7 +515,7 @@ class _TimeTableScreenState extends State<TimeTableScreen> {
                                         : const BoxDecoration(),
                                     child: Center(
                                       child: AddText(
-                                        color: timeTableProvider.getIndex == 5
+                                        color: value.getIndex == 5
                                             ? Colors.white
                                             : Colors.black,
                                         data: 'SAT',
